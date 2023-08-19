@@ -1,0 +1,6 @@
+--- sycl/plugins/unified_runtime/ur/adapters/cuda/queue.hpp
++++ sycl/plugins/unified_runtime/ur/adapters/cuda/queue.hpp
+@@ -12,2 +12,3 @@
+ #include <cuda.h>
++#include <algorithm>
+ #include <vector>

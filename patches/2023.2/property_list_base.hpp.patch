@@ -1,0 +1,6 @@
+--- sycl/include/sycl/detail/property_list_base.hpp
++++ sycl/include/sycl/detail/property_list_base.hpp
+@@ -14,2 +14,3 @@
+ 
++#include <algorithm>
+ #include <bitset>

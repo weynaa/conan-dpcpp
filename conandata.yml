@@ -1,0 +1,13 @@
+sources:
+    "2023.2":
+       url: "https://github.com/intel/llvm/archive/refs/tags/2023-WW27.zip"
+       sha256: "f790c1c088c38fd99d8a39d987567d5bcaf3aac42d41b748195e7847685ee754"
+       strip_root: true
+patches:
+    "2023.2":
+        - patch_file: "patches/2023.2/context.cpp.patch"
+        - patch_file: "patches/2023.2/device.cpp.patch"
+        - patch_file: "patches/2023.2/enqueue.cpp.patch"
+        - patch_file: "patches/2023.2/kernel.hpp.patch"
+        - patch_file: "patches/2023.2/property_list_base.hpp.patch"
+        - patch_file: "patches/2023.2/queue.hpp.patch"

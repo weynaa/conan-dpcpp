@@ -1,0 +1,7 @@
+--- sycl/plugins/unified_runtime/ur/adapters/cuda/device.cpp
++++ sycl/plugins/unified_runtime/ur/adapters/cuda/device.cpp
+@@ -7,3 +7,3 @@
+ //===-----------------------------------------------------------------===//
+-
++#include <array>
+ #include <cassert>

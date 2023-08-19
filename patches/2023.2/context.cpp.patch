@@ -1,0 +1,7 @@
+--- sycl/plugins/unified_runtime/ur/adapters/cuda/context.cpp
++++ sycl/plugins/unified_runtime/ur/adapters/cuda/context.cpp
+@@ -52,3 +52,3 @@
+ 
+-  switch (uint32_t{ContextInfoType}) {
++  switch (ContextInfoType) {
+   case UR_CONTEXT_INFO_NUM_DEVICES:

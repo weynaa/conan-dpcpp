@@ -1,0 +1,6 @@
+--- sycl/plugins/unified_runtime/ur/adapters/cuda/enqueue.cpp
++++ sycl/plugins/unified_runtime/ur/adapters/cuda/enqueue.cpp
+@@ -15,2 +15,3 @@
+ 
++#include <algorithm>
+ #include <cmath>

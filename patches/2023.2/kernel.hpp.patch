@@ -1,0 +1,6 @@
+--- sycl/plugins/unified_runtime/ur/adapters/cuda/kernel.hpp
++++ sycl/plugins/unified_runtime/ur/adapters/cuda/kernel.hpp
+@@ -12,2 +12,3 @@
+ 
++#include <array>
+ #include <atomic>
