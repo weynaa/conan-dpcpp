@@ -24,7 +24,7 @@ class DpcppConan(ConanFile):
   default_options = {
     "cuda_runtime": "None"
   }
-  
+  generators = [ "VirtualRunEnv","VirtualBuildEnv" ]
   exports_sources = [ "patches/*.patch", "cmake/*.cmake" ]
 
   def build_requirements(self):
@@ -42,8 +42,6 @@ class DpcppConan(ConanFile):
      
      
   def generate(self):
-      ms = VirtualBuildEnv(self)
-      ms.generate()
       if is_msvc(self): 
         vcvars = VCVars(self)
         vcvars.generate()
@@ -72,8 +70,9 @@ class DpcppConan(ConanFile):
     if self.settings.os == "Windows":
       self.cpp_info.libs = [ "sycl7d" if isDebug else "sycl7", "sycl-devicelib-host"]
     else:
-      self.cpp_info.libs = [ "sycld" if isDebug else "sycl", "sycl-devicelib-host" ]
+      self.cpp_info.libs = [ "sycl" , "sycl-devicelib-host" ]
     bindir = join(self.package_folder, "bin")
+    libdir = join(self.package_folder, "lib")
     cc = join(bindir, "clang") 
     cxx = join(bindir, "clang++")
     self.buildenv_info.define("CC", cc)
@@ -89,3 +88,6 @@ class DpcppConan(ConanFile):
     self.cpp_info.exelinkflags = linkflags
     self.cpp_info.sharedlinkflags = linkflags
     self.runenv_info.append_path("PATH", bindir)
+    self.runenv_info.append_path("LD_LIBRARY_PATH", libdir)
+    self.runenv_info.append_path("DYLD_LIBRARY_PATH", libdir)
+
