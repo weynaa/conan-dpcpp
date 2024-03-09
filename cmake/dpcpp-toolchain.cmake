@@ -1,0 +1,8 @@
+set(CMAKE_C_COMPILER "clang")
+set(CMAKE_CXX_COMPILER "clang++")
+if(WIN32)
+  string(APPEND CMAKE_SHARED_LINKER_FLAGS_DEBUG_INIT " -lmsvcrtd")
+  string(APPEND CMAKE_SHARED_LINKER_FLAGS_RELEASE_INIT " -lmsvcrt")
+  string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG_INIT " -lmsvcrtd")
+  string(APPEND CMAKE_EXE_LINKER_FLAGS_RELEASE_INIT " -lmsvcrt")
+endif()
