@@ -25,7 +25,7 @@ class DpcppConan(ConanFile):
     "cuda_runtime": "None"
   }
   
-  exports_sources = [ "patches/*.patch" ]
+  exports_sources = [ "patches/*.patch", "cmake/*.cmake" ]
 
   def build_requirements(self):
     self.tool_requires("ninja/[>=1.11]")
@@ -36,7 +36,11 @@ class DpcppConan(ConanFile):
 
   def source(self):
     get(self, **self.conan_data["sources"][self.version])
-
+    for p in self.conan_data["patches"][self.version]:
+      patch_file = join(self.export_sources_folder, p["patch_file"])
+      patch(self, patch_file=patch_file)
+     
+     
   def generate(self):
       ms = VirtualBuildEnv(self)
       ms.generate()
@@ -45,10 +49,7 @@ class DpcppConan(ConanFile):
         vcvars.generate()
   
   def build(self):
-    for p in self.conan_data["patches"][self.version]:
-      patch_file = join(self.export_sources_folder, p["patch_file"])
-      patch(self, patch_file=patch_file)
-    configure_args = "--enable-all-llvm-targets"
+    configure_args = ""
     if self.options.cuda_runtime != "None":
       configure_args += " --cuda"
     self.run(f'python {self.source_folder}/buildbot/configure.py -o {self.build_folder} {configure_args}')
@@ -58,23 +59,8 @@ class DpcppConan(ConanFile):
 
   def package(self):
     copy(self, "*", join(self.build_folder, "install"), self.package_folder)
-    copy(self, "*.cmake", join(self.recipe_folder, "cmake"), join(self.package_folder, "cmake"))
+    copy(self, "*.cmake", join(self.export_sources_folder, "cmake"), join(self.package_folder, "cmake"))
 
-  def compatibility(self):
-    if self.info.compiler == "clang":
-      return [
-        { "settings": [
-            ("compiler","msvc")
-            ("compiler.version", 193)
-          ]
-        },
-        { "settings":[
-          ("compiler", "msvc")
-          ("compiler.version", 192)
-        ]}  
-      ]
-    return []
-  
   def package_id(self):
     del self.info.settings.compiler
   
@@ -84,9 +70,9 @@ class DpcppConan(ConanFile):
   def package_info(self):
     isDebug = self.settings.build_type == "Debug"
     if self.settings.os == "Windows":
-      self.cpp_info.libs = [ "sycl7d" if isDebug else "sycl7" , "sycl-devicelib-host"]
+      self.cpp_info.libs = [ "sycl7d" if isDebug else "sycl7", "sycl-devicelib-host"]
     else:
-      self.cpp_info.libs = [ "sycld" if isDebug else "sycl" ]
+      self.cpp_info.libs = [ "sycld" if isDebug else "sycl", "sycl-devicelib-host" ]
     bindir = join(self.package_folder, "bin")
     cc = join(bindir, "clang") 
     cxx = join(bindir, "clang++")
@@ -97,10 +83,9 @@ class DpcppConan(ConanFile):
       rc = join(bindir, "llvm-rc")
       self.buildenv_info.define("RC", rc)
     linkflags = [ "-fsycl" ]
-    if(is_msvc(self)):
-      self.buildenv_info.define("CXXFLAGS", "-lmsvcrtd" if isDebug else "-lmsvcrt")
+    self.conf_info.define("tools.cmake.cmaketoolchain:user_toolchain", [ join(self.package_folder, "cmake/dpcpp-toolchain.cmake") ])
     self.cpp_info.includedirs = ["include/sycl", "include/std", "include/xpti", "include"]
     self.cpp_info.cxxflags=["-fsycl"]
-    self.cpp_info.exelinkflags=linkflags
-    self.cpp_info.sharedlinkflags=linkflags
+    self.cpp_info.exelinkflags = linkflags
+    self.cpp_info.sharedlinkflags = linkflags
     self.runenv_info.append_path("PATH", bindir)
