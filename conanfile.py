@@ -36,7 +36,7 @@ class DpcppConan(ConanFile):
 
   def source(self):
     get(self, **self.conan_data["sources"][self.version])
-    for p in self.conan_data["patches"][self.version]:
+    for p in self.conan_data["patches"].get(self.version, []):
       patch_file = join(self.export_sources_folder, p["patch_file"])
       patch(self, patch_file=patch_file)
      
@@ -67,7 +67,7 @@ class DpcppConan(ConanFile):
 
   def package_info(self):
     isDebug = self.settings.build_type == "Debug"
-    if self.settings.os == "Windows":
+    if self.settings.os == "Windows" and self.version == "2023.2":
       self.cpp_info.libs = [ "sycl7d" if isDebug else "sycl7", "sycl-devicelib-host"]
     else:
       self.cpp_info.libs = [ "sycl" , "sycl-devicelib-host" ]
@@ -81,12 +81,14 @@ class DpcppConan(ConanFile):
     if(self.settings.os == "Windows"):
       rc = join(bindir, "llvm-rc")
       self.buildenv_info.define("RC", rc)
-    linkflags = [ "-fsycl" ]
     self.conf_info.define("tools.cmake.cmaketoolchain:user_toolchain", [ join(self.package_folder, "cmake/dpcpp-toolchain.cmake") ])
     self.cpp_info.includedirs = ["include/sycl", "include/std", "include/xpti", "include"]
-    self.cpp_info.cxxflags=["-fsycl"]
-    self.cpp_info.exelinkflags = linkflags
-    self.cpp_info.sharedlinkflags = linkflags
+    sycl_flags = [ "-fsycl" ]
+    if self.options["cuda_runtime"] != None:
+      self.cpp_info.libdirs.append("lib/clc")
+    self.cpp_info.cxxflags = sycl_flags
+    self.cpp_info.exelinkflags = sycl_flags
+    self.cpp_info.sharedlinkflags = sycl_flags
     self.runenv_info.append_path("PATH", bindir)
     self.runenv_info.append_path("LD_LIBRARY_PATH", libdir)
     self.runenv_info.append_path("DYLD_LIBRARY_PATH", libdir)
