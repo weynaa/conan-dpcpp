@@ -19,7 +19,7 @@ class DpcppConan(ConanFile):
 
   settings = "os", "arch", "compiler", "build_type"
   options = {
-    "cuda_runtime": ["None", "12.3"]
+    "cuda_runtime": ["None", "12"]
   }
   default_options = {
     "cuda_runtime": "None"

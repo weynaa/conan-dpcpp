@@ -3,8 +3,6 @@ import os
 from conan import ConanFile
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain
 from conan.tools.build import can_run
-#from conan.tools.microsoft import VCVars
-#from conan.tools.microsoft import is_msvc
 
 class DPCPPTestConan(ConanFile):
     settings = "os", "build_type", "compiler", "arch"
@@ -19,6 +17,8 @@ class DPCPPTestConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self, "Ninja")
+        if self.dependencies[self.tested_reference_str].options["cuda_runtime"]:
+            tc.cache_variables["SYCL_WITH_CUDA"] = True
         tc.generate()
 
     def build(self):

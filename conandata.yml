@@ -4,8 +4,8 @@ sources:
        sha256: "f790c1c088c38fd99d8a39d987567d5bcaf3aac42d41b748195e7847685ee754"
        strip_root: true
     "2024.1":
-       url: "https://github.com/intel/llvm/archive/refs/tags/nightly-2024-03-22.zip"
-       sha256: "fd234f7280c0fa89b0df6d71a2336166f1ab9fbe3fab1cc9882ffb74d73471d9"
+       url: "https://github.com/intel/llvm/archive/refs/tags/nightly-2024-05-30.zip"
+       sha256: "60047ac1f0e1f67c628b3d802a71d52e8c9ae788f8c2b5a3505587a9af239a8b"
        strip_root: true
 patches:
     "2023.2":
